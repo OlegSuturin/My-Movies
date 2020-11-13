@@ -20,8 +20,10 @@ import java.util.concurrent.ExecutionException;
 //вся работа с сетью
 //API key 3bcb031a3c3fcdb49409692e8fb88be9
 //Пример запроса - https://api.themoviedb.org/3/discover/movie?api_key=3bcb031a3c3fcdb49409692e8fb88be9&language=en-US&sort_by=vote_average.desc&include_adult=false&include_video=false&page=2
+//Пример пути к картинке https://image.tmdb.org/t/p/w500/8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg
 public class NetworkUtils {
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie";
+
 
     private static final String PARAMS_API_KEY = "api_key";   //параметры
     private static final String PERAMS_LANGUAGE = "language";
@@ -37,7 +39,7 @@ public class NetworkUtils {
     public static final int TOP_RATED = 1;
 
 
-                            //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL
+    //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL
     private static URL buildURL(int sortBy, int page) {
         URL resultURL = null;   // присв null, т.к. преобразование может выбросить исключение
         String methodSortBy;
@@ -65,14 +67,14 @@ public class NetworkUtils {
     }
 
 
-                             //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА - исполняется в др.программном потоке
-    public static  JSONObject  getJSONFromNetwork(int sortBy, int page){
+    //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА - исполняется в др.программном потоке
+    public static JSONObject getJSONFromNetwork(int sortBy, int page) {
         JSONObject jsonObject = null;
         URL url = buildURL(sortBy, page); //формируем url
         //Log.i("!@#", url.toString());
         try {
-             JSONLoadTask task = new JSONLoadTask();
-             jsonObject = task.execute(url).get();   // запускаем загрузку в другом программном потоке
+            JSONLoadTask task = new JSONLoadTask();
+            jsonObject = task.execute(url).get();   // запускаем загрузку в другом программном потоке
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -82,42 +84,42 @@ public class NetworkUtils {
         // результат - готовый JSON
     }
 
-    private static class JSONLoadTask extends AsyncTask<URL, Void, JSONObject>{
+    private static class JSONLoadTask extends AsyncTask<URL, Void, JSONObject> {
 
-                                 @Override
-                                 protected JSONObject doInBackground(URL... urls) {
-                                     JSONObject jsonObject = null;
+        @Override
+        protected JSONObject doInBackground(URL... urls) {
+            JSONObject jsonObject = null;
 
-                                     if (urls == null || urls.length == 0) {            //обязательно проверять URL
-                                         return jsonObject; // будет = null
-                                     } else {
-                                         HttpURLConnection urlConnection = null;
-                                         try {
-                                             urlConnection = (HttpURLConnection) urls[0].openConnection();
-                                             InputStream in = urlConnection.getInputStream();
-                                             InputStreamReader reader = new InputStreamReader(in);
-                                             BufferedReader bufferedReader = new BufferedReader(reader);
-                                             StringBuilder stringBuilder = new StringBuilder();
-                                             String line = bufferedReader.readLine();
-                                                while (line != null){
-                                                stringBuilder.append(line);
-                                                line = bufferedReader.readLine();
-                                                }
+            if (urls == null || urls.length == 0) {            //обязательно проверять URL
+                return jsonObject; // будет = null
+            } else {
+                HttpURLConnection urlConnection = null;
+                try {
+                    urlConnection = (HttpURLConnection) urls[0].openConnection();
+                    InputStream in = urlConnection.getInputStream();
+                    InputStreamReader reader = new InputStreamReader(in);
+                    BufferedReader bufferedReader = new BufferedReader(reader);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line = bufferedReader.readLine();
+                    while (line != null) {
+                        stringBuilder.append(line);
+                        line = bufferedReader.readLine();
+                    }
 
-                                                jsonObject = new JSONObject(stringBuilder.toString());
+                    jsonObject = new JSONObject(stringBuilder.toString());
 
-                                         } catch (IOException | JSONException e) {
-                                             e.printStackTrace();
-                                         } finally {
-                                             if (urlConnection != null) {
-                                                 urlConnection.disconnect();
-                                             }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
 
-                                         }
-                                         return jsonObject;
-                                     }
-                                 }
-                             }
+                }
+                return jsonObject;
+            }
+        }
+    }
 
 }
 

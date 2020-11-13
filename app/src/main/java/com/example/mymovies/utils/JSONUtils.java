@@ -10,6 +10,11 @@ import java.util.ArrayList;
 
 //получаем данные из JSON
 public abstract class JSONUtils {
+    public static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
+    public static final String SMALL_POSTER_SIZE = "w185";                  //размеры картинок - из документации источника данных - как часть пути картинке
+    public static final String BIG_POSTER_SIZE = "w780";
+    public static final String BACKDROP_POSTER_SIZE = "w780";
+
     //список ключей
     private static final String KEY_RESULTS = "results";
 
@@ -22,7 +27,6 @@ public abstract class JSONUtils {
     private static final String KEY_BACKDROP_PASH = "backdrop_path";
     private static final String KEY_VOTE_AVERAGE = "vote_average";
     private static final String KEY_RELESE_DATE = "release_date";
-
 
 
     // Метод - сделав запрос в JSON, получаем массив с фильмами
@@ -43,11 +47,13 @@ public abstract class JSONUtils {
                 String title = jsonObjectMovie.getString(KEY_TITLE);
                 String originalTitle = jsonObjectMovie.getString(KEY_ORIGINAL_TITLE);
                 String overview = jsonObjectMovie.getString(KEY_OVERVIEW);
-                String posterPath = jsonObjectMovie.getString(KEY_POSTER_PATH);
-                String backdropPath = jsonObjectMovie.getString(KEY_BACKDROP_PASH);
+                String posterPath = BASE_POSTER_URL + SMALL_POSTER_SIZE + jsonObjectMovie.getString(KEY_POSTER_PATH);
+                String bigPosterPath = BASE_POSTER_URL + BIG_POSTER_SIZE + jsonObjectMovie.getString(KEY_POSTER_PATH);
+                String backdropPath = BASE_POSTER_URL + BACKDROP_POSTER_SIZE + jsonObjectMovie.getString(KEY_POSTER_PATH);
+                jsonObjectMovie.getString(KEY_BACKDROP_PASH);
                 double voteAverage = jsonObjectMovie.getDouble(KEY_VOTE_AVERAGE);
                 String releaseDate = jsonObjectMovie.getString(KEY_RELESE_DATE);
-                Movie movie = new Movie(id,voteCount,title,originalTitle,overview,posterPath,backdropPath,voteAverage,releaseDate);
+                Movie movie = new Movie(id, voteCount, title, originalTitle, overview, posterPath, bigPosterPath, backdropPath, voteAverage, releaseDate);
                 result.add(movie); //перенесли данные в ArrayList
             }
 

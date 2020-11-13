@@ -9,21 +9,33 @@ public class Movie {
     private String originalTitle;   //оригинальное название
     private String overview;        //описание
     private String posterPath;      //путь к постеру
+    private String bigPosterPath;
     private String backdropPath;    //фоновое изображение
     private double voteAverage;        //среднее кол-во голосов
     private String releaseDate;     //дата релиза
 
 
-    public Movie(int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String backdropPath, double voteAverage, String releaseDate) {
+
+
+    public Movie(int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseDate) {
         this.id = id;
         this.voteCount = voteCount;
         this.title = title;
         this.originalTitle = originalTitle;
         this.overview = overview;
         this.posterPath = posterPath;
+        this.bigPosterPath = bigPosterPath;
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
         this.releaseDate = releaseDate;
+    }
+
+    public String getBigPosterPath() {
+        return bigPosterPath;
+    }
+
+    public void setBigPosterPath(String bigPosterPath) {
+        this.bigPosterPath = bigPosterPath;
     }
 
     public int getId() {
