@@ -2,8 +2,14 @@ package com.example.mymovies.data;
 //класс Фильм, сформированный из JSON
 //он же объект POJO, для хранения в БД
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "movies")
 public class Movie {
+    @PrimaryKey(autoGenerate = false)
     private int id;   //т.к. в JSON источнике у каждого фильма есть свой уникальный id, то назначаем его Первичным ключем без autonncrement
+
     private int voteCount;          //кол-во голосов
     private String title;           //назв. фильма
     private String originalTitle;   //оригинальное название
@@ -13,8 +19,6 @@ public class Movie {
     private String backdropPath;    //фоновое изображение
     private double voteAverage;        //среднее кол-во голосов
     private String releaseDate;     //дата релиза
-
-
 
 
     public Movie(int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseDate) {

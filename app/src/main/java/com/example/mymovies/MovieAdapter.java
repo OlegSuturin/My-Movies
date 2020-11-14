@@ -15,10 +15,11 @@ import com.squareup.picasso.Picasso;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 //Адаптер для RecyclerView
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    ArrayList<Movie> movies;
+    List<Movie> movies;
     OnPosterClickListener onPosterClickListener;   //объект ИНТЕРФЕЙСНОГО ТИПА слушателя на нажатие
     OnReachEndListener onReachEndListener;         //объект ИНТЕРФЕЙСНОГО ТИПА слушателя на достижение конца списка
 
@@ -26,18 +27,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         movies = new ArrayList<>();   //создали массив
     }
 
-    public void setMovies(ArrayList<Movie> movies) {
+    public void setMovies(List<Movie> movies) {
         this.movies = movies;
         notifyDataSetChanged();  //всегда оповещаем адаптер об изменении массива
     }
 
     //МЕТОД - когда будем листать список фильмов, будем добавлять (погружать) их в этот же массив, а не заменять старый массив новым
-    public void addMovies(ArrayList<Movie> movies) {
+    public void addMovies(List<Movie> movies) {
         this.movies.addAll(movies);
         notifyDataSetChanged();   //всегда оповещаем адаптер об изменении массива
     }
 
-    public ArrayList<Movie> getMovies() {
+    public List<Movie> getMovies() {
         return movies;
     }
 
