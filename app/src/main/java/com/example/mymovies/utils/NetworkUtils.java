@@ -2,8 +2,6 @@ package com.example.mymovies.utils;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,9 +29,9 @@ public class NetworkUtils {
     private static final String PARAMS_PAGE = "page";
 
     private static final String API_KEY = "3bcb031a3c3fcdb49409692e8fb88be9";     //их значения
-    private static final String LANGUAGE_VALUE = "ru-ru";
-    private static final String SORT_BY_POPULARITY = "popularity.desc";  // сорт.по популярности убыв.
-    private static final String SORT_BY_ROP_RATED = "vote_average.desc"; //по средней оценке убыв.
+    private static final String LANGUAGE_VALUE = "ru-RU";
+    private static final String SORT_BY_POPULARITY ="popularity.desc" ;  // сорт.по популярности убыв.
+    private static final String SORT_BY_TOP_RATED ="vote_average.desc" ; //по средней оценке убыв.
 
     public static final int POPULARITY = 0; //для метода- который принимает int, в зависимости от вида сортировки выдает разные результаты
     public static final int TOP_RATED = 1;
@@ -47,7 +45,7 @@ public class NetworkUtils {
         if (sortBy == POPULARITY) {             //проверяем - какой вид сортировки выбран
             methodSortBy = SORT_BY_POPULARITY;
         } else {
-            methodSortBy = SORT_BY_ROP_RATED;
+            methodSortBy = SORT_BY_TOP_RATED;
         }
         //формируем строку запроса ? = & вст. автоматически
         Uri uri = Uri.parse(BASE_URL).buildUpon()

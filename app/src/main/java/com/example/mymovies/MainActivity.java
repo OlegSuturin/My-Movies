@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -65,7 +66,14 @@ public class MainActivity extends AppCompatActivity {
         movieAdapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {     //СОЗДАЛИ Слушатель - срабатывает на нажатие на Постер - элемент RecycleView
             @Override
             public void onPosterClick(int position) {
-                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                Movie movie = movieAdapter.getMovies().get(position);
+
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("id", movie.getId());
+
+                //movies.get(position).getId()
+                startActivity(intent);
             }
         });
 
@@ -74,20 +82,23 @@ public class MainActivity extends AppCompatActivity {
             public void onReachEnd() {
                 Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
 
+
             }
         });
 
+        //из Интернета заполняем свой ArrayList movies, из movies заполняем БД - downLoadData() (Live data -> Recyclerview = отображение - onChanged() observer)
         LiveData<List<Movie>> moviesFromLivedata = viewModel.getMovies();    //получили объект LiveData
-        moviesFromLivedata.observe(this, new Observer<List<Movie>>() {    //назначаем его Observer  - связали с БД
+        moviesFromLivedata.observe(this, new Observer<List<Movie>>() {    //назначаем его Observer  - просматриваемый
             @Override
-            public void onChanged(List<Movie> moviesFromLivedata) {          //метод запускается каждый раз, как изменяется БД
-                movieAdapter.setMovies(moviesFromLivedata);
+            public void onChanged(List<Movie> moviesFromLivedata) {          //метод запускается каждый раз, как изменяется список (синхронизирован с записями БД);
+                movieAdapter.setMovies(moviesFromLivedata);             //Метод отвечает за  - обновление данные на RecyclerView  - ОТОБРАЖЕНИЕ
                 movieAdapter.notifyDataSetChanged();
             }
         });
 
     } // end of onCreate()
     //------------------------------------------------------------------------------------------------------
+
 
     public void onClickTextViewPopilarity(View view) {
         switchSort.setChecked(false);
@@ -109,12 +120,13 @@ public class MainActivity extends AppCompatActivity {
             textViewPopilarity.setTextColor(getResources().getColor(R.color.teal_200));
             textViewTopRated.setTextColor(getResources().getColor(R.color.white));
         }
-        downLoadData(methodOfSort, 1);
+        downLoadData(methodOfSort, 1);     //загружаем данные из интернета и заполняем БД
     }
 
     //вынесли загрузку данных в отдельный метод
+    //из Интернета заполняем свой ArrayList movies, из movies заполняем БД (Live data -> Recyclerview = отображение)
     private void downLoadData(int methodOfSort, int page) {
-        jsonObject = NetworkUtils.getJSONFromNetwork(methodOfSort, 1);
+        jsonObject = NetworkUtils.getJSONFromNetwork(methodOfSort, page);
         movies = JSONUtils.getMoviesFromJSON(jsonObject);
         if (movies != null && !movies.isEmpty()){        //проверили, что данные получили
             viewModel.deleteAllMovie();             //очищаем все предидущие данные в БД
@@ -123,9 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
  //         movieAdapter.setMovies(movies);     перенесли установку данных на адаптер в метод onChanged Обсервера сразу с данными LivData
-
         }
-
     }
 
-}
+} // end of class
