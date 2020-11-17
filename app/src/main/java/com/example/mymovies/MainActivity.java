@@ -1,5 +1,6 @@
 package com.example.mymovies;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -9,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -99,7 +103,33 @@ public class MainActivity extends AppCompatActivity {
     } // end of onCreate()
     //------------------------------------------------------------------------------------------------------
 
+                            //СОЗДАЕМ МЕНЮ - переопределяем метод onCreateOptionsMenu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
 
+        return super.onCreateOptionsMenu(menu);
+    }
+                    //реакция на нажатие пунктов меню - переопределяем мето onOptionsItemSelected
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();       //считываем id пункта меню
+        switch (id){
+            case R.id.itemMain:
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.itemFavourite:
+                Intent intentToFavourite = new Intent(this, FavouriteActivity.class);
+                startActivity(intentToFavourite);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    //-------------------------------------------------------------------------------------------------------
+    //Методы onСlick на Textview
     public void onClickTextViewPopilarity(View view) {
         switchSort.setChecked(false);
     }
