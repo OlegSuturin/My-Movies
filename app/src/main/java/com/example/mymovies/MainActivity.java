@@ -19,6 +19,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mymovies.adapters.MovieAdapter;
 import com.example.mymovies.data.MainViewModel;
 import com.example.mymovies.data.Movie;
 import com.example.mymovies.utils.JSONUtils;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewPopilarity;
     private TextView textViewTopRated;
 
+   // private MovieAdapter movieAdapter;
     private MovieAdapter movieAdapter;
     private JSONObject jsonObject;
     private ArrayList<Movie> movies;

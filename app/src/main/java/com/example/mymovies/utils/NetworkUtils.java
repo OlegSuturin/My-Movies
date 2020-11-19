@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
@@ -19,8 +20,14 @@ import java.util.concurrent.ExecutionException;
 //API key 3bcb031a3c3fcdb49409692e8fb88be9
 //Пример запроса - https://api.themoviedb.org/3/discover/movie?api_key=3bcb031a3c3fcdb49409692e8fb88be9&language=en-US&sort_by=vote_average.desc&include_adult=false&include_video=false&page=2
 //Пример пути к картинке https://image.tmdb.org/t/p/w500/8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg
+
+//Пример запроса на трейлероы https://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=3bcb031a3c3fcdb49409692e8fb88be9&language=en-US
+//Пример запроса на отзывы https://api.themoviedb.org/3/movie/{movie_id}/reviews?api_key=3bcb031a3c3fcdb49409692e8fb88be9&language=en-US&page=1
+
 public class NetworkUtils {
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie";
+    private static final String BASE_URL_VIDEOS = "https://api.themoviedb.org/3/movie/%s/videos";    //%s - id фильма
+    private static final String BASE_URL_REVIEWS = "https://api.themoviedb.org/3/movie/%s/reviews";     //%s - id фильма
 
 
     private static final String PARAMS_API_KEY = "api_key";   //параметры
@@ -30,14 +37,50 @@ public class NetworkUtils {
 
     private static final String API_KEY = "3bcb031a3c3fcdb49409692e8fb88be9";     //их значения
     private static final String LANGUAGE_VALUE = "ru-RU";
-    private static final String SORT_BY_POPULARITY ="popularity.desc" ;  // сорт.по популярности убыв.
-    private static final String SORT_BY_TOP_RATED ="vote_average.desc" ; //по средней оценке убыв.
+    private static final String SORT_BY_POPULARITY = "popularity.desc";  // сорт.по популярности убыв.
+    private static final String SORT_BY_TOP_RATED = "vote_average.desc"; //по средней оценке убыв.
 
     public static final int POPULARITY = 0; //для метода- который принимает int, в зависимости от вида сортировки выдает разные результаты
     public static final int TOP_RATED = 1;
 
+    //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на ОТЗЫВЫ фильма
+    public static URL buildURLReviews(int id) {
+        URL resultURL = null;
+        String baseURLVideos = String.format(BASE_URL_REVIEWS, id);
 
-    //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL
+        Uri uri = Uri.parse(baseURLVideos).buildUpon()
+                .appendQueryParameter(PARAMS_API_KEY, API_KEY)
+            //    .appendQueryParameter(PERAMS_LANGUAGE, LANGUAGE_VALUE)
+                .build();
+
+        try {
+            resultURL = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return resultURL;
+    }
+
+    //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на трейлеры фильма
+    public static URL buildURLVideos(int id) {
+        URL resultURL = null;
+        String baseURLVideos = String.format(BASE_URL_VIDEOS, id);
+
+        Uri uri = Uri.parse(baseURLVideos).buildUpon()
+                .appendQueryParameter(PARAMS_API_KEY, API_KEY)
+                .appendQueryParameter(PERAMS_LANGUAGE, LANGUAGE_VALUE)
+                .build();
+
+        try {
+            resultURL = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return resultURL;
+    }
+
+
+    //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на фильмы
     private static URL buildURL(int sortBy, int page) {
         URL resultURL = null;   // присв null, т.к. преобразование может выбросить исключение
         String methodSortBy;
@@ -69,6 +112,40 @@ public class NetworkUtils {
     public static JSONObject getJSONFromNetwork(int sortBy, int page) {
         JSONObject jsonObject = null;
         URL url = buildURL(sortBy, page); //формируем url
+        //Log.i("!@#", url.toString());
+        try {
+            JSONLoadTask task = new JSONLoadTask();
+            jsonObject = task.execute(url).get();   // запускаем загрузку в другом программном потоке
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+        // результат - готовый JSON
+    }
+
+    //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА для Трейлеров - исполняется в др.программном потоке
+    public static JSONObject getJSONFForVideos(int id) {
+        JSONObject jsonObject = null;
+        URL url = buildURLVideos(id); //формируем url
+        //Log.i("!@#", url.toString());
+        try {
+            JSONLoadTask task = new JSONLoadTask();
+            jsonObject = task.execute(url).get();   // запускаем загрузку в другом программном потоке
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+        // результат - готовый JSON
+    }
+
+    //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА для ОТЗЫВОВ - исполняется в др.программном потоке
+    public static JSONObject getJSONForReviews(int id) {
+        JSONObject jsonObject = null;
+        URL url = buildURLReviews(id); //формируем url
         //Log.i("!@#", url.toString());
         try {
             JSONLoadTask task = new JSONLoadTask();

@@ -1,4 +1,4 @@
-package com.example.mymovies;
+package com.example.mymovies.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,16 +8,14 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mymovies.R;
 import com.example.mymovies.data.Movie;
-import com.example.mymovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-//Адаптер для RecyclerView
+//Адаптер для RecyclerView - Фильмы
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     List<Movie> movies;
     OnPosterClickListener onPosterClickListener;   //объект ИНТЕРФЕЙСНОГО ТИПА слушателя на нажатие
@@ -44,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     //создаем СЛУШАТЕЛЯ на нажатие на картинку (элемент RecyclerView)
     //ИНТЕРФЕЙС который содержит один метод
-    interface OnPosterClickListener {
+   public   interface OnPosterClickListener {
         void onPosterClick(int position);
     }
 
@@ -54,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     //создаем СЛУШАТЕЛЯ на определение - достижения просмотра последнего элемента -  для подгрузки остальных данных из интернета и размещения их на RecycleView
-    interface OnReachEndListener {
+   public interface OnReachEndListener {
         void onReachEnd();        //метод вызываем при достижении конца листа - размещаем его в методе onBindViewHolder
         //т.к. онс связывает Холдер с ПОЗИЦИЕЙ элемента
     }
