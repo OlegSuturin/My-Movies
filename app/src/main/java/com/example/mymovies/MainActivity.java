@@ -1,15 +1,19 @@
 package com.example.mymovies;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,10 +31,11 @@ import com.example.mymovies.utils.NetworkUtils;
 
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<JSONObject> {
     private RecyclerView recyclerViewPosters;
     private Switch switchSort;
     private TextView textViewPopilarity;
@@ -43,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
     private MainViewModel viewModel;
 
+    private static final int LOADER_ID = 133; // - уникальный идентификатор загрузчика, определяем сами
+    private LoaderManager loaderManager;      //  - менеджер загрузок
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         textViewTopRated = findViewById(R.id.textViewTopRated);
 
         viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
+        loaderManager = LoaderManager.getInstance(this);       // получение доступа к loaderManager  используется паттерн SINGLETON
 
         movieAdapter = new MovieAdapter();
         recyclerViewPosters.setLayoutManager(new GridLayoutManager(this, 2));   //установили отображение сеткой 2
@@ -158,16 +169,44 @@ public class MainActivity extends AppCompatActivity {
     //вынесли загрузку данных в отдельный метод
     //из Интернета заполняем свой ArrayList movies, из movies заполняем БД (Live data -> Recyclerview = отображение)
     private void downLoadData(int methodOfSort, int page) {
-        jsonObject = NetworkUtils.getJSONFromNetwork(methodOfSort, page);
+        URL url = NetworkUtils.buildURL(methodOfSort, page);
+      //  Log.i("!@#", url.toString());
+        Bundle bundle = new Bundle();
+        bundle.putString("url", url.toString());
+        loaderManager.restartLoader(LOADER_ID, bundle, this);     //запускаем ЗАГРУЗЧИК
+
+     /*   jsonObject = NetworkUtils.getJSONFromNetwork(methodOfSort, page);
         movies = JSONUtils.getMoviesFromJSON(jsonObject);
         if (movies != null && !movies.isEmpty()){        //проверили, что данные получили
             viewModel.deleteAllMovie();             //очищаем все предидущие данные в БД
                 for(Movie movie: movies){              // заполняб БД
                     viewModel.insertMovie(movie);
                 }
-
- //         movieAdapter.setMovies(movies);     перенесли установку данных на адаптер в метод onChanged Обсервера сразу с данными LivData
-        }
+        }*/
     }
 
+    //-----------------------------------------------------------от implements LoaderManager.LoaderCallbacks<JSONObject>
+    @NonNull
+    @Override                                                                   // в данном метода создаем загрузчик
+    public Loader<JSONObject> onCreateLoader(int id, @Nullable Bundle args) {                    // id - уникальный идентификатор загрузчика, определяем сами
+        NetworkUtils.JSONLoader jsonLoader = new NetworkUtils.JSONLoader(this, args);    //args - объект бандл
+        return jsonLoader;
+    }
+
+    @Override                               //в этом методе получаем данные по окончании работы загрузчика
+    public void onLoadFinished(@NonNull Loader<JSONObject> loader, JSONObject jsonObject) {
+       ArrayList<Movie> movies = JSONUtils.getMoviesFromJSON(jsonObject);
+        if (movies != null && !movies.isEmpty()) {        //проверили, что данные получили
+            viewModel.deleteAllMovie();             //очищаем все предидущие данные в БД
+            for (Movie movie : movies) {              // заполняб БД
+                viewModel.insertMovie(movie);
+            }
+        }
+        loaderManager.destroyLoader(LOADER_ID);    //после загрузки данных удаляем загрузчик
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<JSONObject> loader) {
+                                                                        //оставляем пустым
+    }
 } // end of class

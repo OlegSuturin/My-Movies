@@ -1,7 +1,14 @@
 package com.example.mymovies.utils;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.content.AsyncTaskLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,11 +41,15 @@ public class NetworkUtils {
     private static final String PERAMS_LANGUAGE = "language";
     private static final String PARAMS_SORT_BY = "sort_by";
     private static final String PARAMS_PAGE = "page";
+    private static final String PARAMS_MIN_VOTE_COUNT = "vote_count.gte";   //параметр фильтрации по количеству голосов
+
 
     private static final String API_KEY = "3bcb031a3c3fcdb49409692e8fb88be9";     //их значения
     private static final String LANGUAGE_VALUE = "ru-RU";
     private static final String SORT_BY_POPULARITY = "popularity.desc";  // сорт.по популярности убыв.
     private static final String SORT_BY_TOP_RATED = "vote_average.desc"; //по средней оценке убыв.
+    private static final String MIN_VOTE_COUNT = "1000";                    //минимальное количество голосов
+
 
     public static final int POPULARITY = 0; //для метода- который принимает int, в зависимости от вида сортировки выдает разные результаты
     public static final int TOP_RATED = 1;
@@ -81,7 +92,7 @@ public class NetworkUtils {
 
 
     //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на фильмы
-    private static URL buildURL(int sortBy, int page) {
+    public static URL buildURL(int sortBy, int page) {
         URL resultURL = null;   // присв null, т.к. преобразование может выбросить исключение
         String methodSortBy;
 
@@ -95,6 +106,7 @@ public class NetworkUtils {
                 .appendQueryParameter(PARAMS_API_KEY, API_KEY)  //добпвляем параметры
                 .appendQueryParameter(PERAMS_LANGUAGE, LANGUAGE_VALUE)
                 .appendQueryParameter(PARAMS_SORT_BY, methodSortBy)     //установили метод сортировки
+                .appendQueryParameter(PARAMS_MIN_VOTE_COUNT, MIN_VOTE_COUNT)
                 .appendQueryParameter(PARAMS_PAGE, Integer.toString(page))
                 .build();
 
@@ -159,7 +171,7 @@ public class NetworkUtils {
         // результат - готовый JSON
     }
 
-    private static class JSONLoadTask extends AsyncTask<URL, Void, JSONObject> {
+    private static class JSONLoadTask extends AsyncTask<URL, Void, JSONObject> {                        //ЗМЕНЕН классом JSONLoader - см.ниже
 
         @Override
         protected JSONObject doInBackground(URL... urls) {
@@ -195,6 +207,69 @@ public class NetworkUtils {
             }
         }
     }
+//----------------------------------------------загрузка данных на основе AsyncTaskLoader
+    public static class JSONLoader extends AsyncTaskLoader<JSONObject>{             // в <> возвращаемое значение
+    private Bundle bundle;    //url передается в объекте Bundle, который формируется при сохоанении состоянии активности
 
+    public JSONLoader(@NonNull Context context, Bundle bundle) {                   //обязательный конструктор
+        super(context);
+        this.bundle =bundle;                //передали bundle в конструкторе
+    }
+
+    @Override                                       //переопределяем
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();       // продолжить ЗАГРУЗКУ
+    }
+
+    @Nullable
+    @Override
+    public JSONObject loadInBackground() {
+        if (bundle == null){
+            return null;
+        }
+        String urlAsString = bundle.getString("url");  //получаем из bundle сохраненный url по ключу
+        URL url = null;
+
+        try {
+            url = new URL(urlAsString);
+           // Log.i("!@#", url.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject jsonObject = null;
+
+        if (url == null) {            //обязательно проверять URL
+            return jsonObject; // будет = null
+        } else {
+            HttpURLConnection urlConnection = null;
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                StringBuilder stringBuilder = new StringBuilder();
+                String line = bufferedReader.readLine();
+                while (line != null) {
+                    stringBuilder.append(line);
+                    line = bufferedReader.readLine();
+                }
+
+                jsonObject = new JSONObject(stringBuilder.toString());
+
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+
+            }
+            return jsonObject;
+        }
+    }
+}
+////////////-----------------------------------------------
 }
 
