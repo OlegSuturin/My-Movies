@@ -54,6 +54,7 @@ public class NetworkUtils {
     public static final int POPULARITY = 0; //для метода- который принимает int, в зависимости от вида сортировки выдает разные результаты
     public static final int TOP_RATED = 1;
 
+
     //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на ОТЗЫВЫ фильма
     public static URL buildURLReviews(int id) {
         URL resultURL = null;
@@ -210,6 +211,15 @@ public class NetworkUtils {
 //----------------------------------------------загрузка данных на основе AsyncTaskLoader
     public static class JSONLoader extends AsyncTaskLoader<JSONObject>{             // в <> возвращаемое значение
     private Bundle bundle;    //url передается в объекте Bundle, который формируется при сохоанении состоянии активности
+    private OnStartLoadingListener onStartLoadingListener;   //объект интерфейсного типа - Слушатель
+
+    public interface OnStartLoadingListener{           // СЛУШАТЕЛЬ на начало загрузки дпнных
+        void onStartLoading();
+    }
+                                                        //+сеттер на него
+    public void setOnStartLoadingListener(OnStartLoadingListener onStartLoadingListener) {
+        this.onStartLoadingListener = onStartLoadingListener;
+    }
 
     public JSONLoader(@NonNull Context context, Bundle bundle) {                   //обязательный конструктор
         super(context);
@@ -219,6 +229,9 @@ public class NetworkUtils {
     @Override                                       //переопределяем
     protected void onStartLoading() {
         super.onStartLoading();
+        if(onStartLoadingListener !=null ){                 //РАЗМЕЩЕНИЕ слушателя
+            onStartLoadingListener.onStartLoading();
+        }
         forceLoad();       // продолжить ЗАГРУЗКУ
     }
 

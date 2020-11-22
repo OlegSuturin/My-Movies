@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,7 +72,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        if (position > movies.size() - 4 && onReachEndListener != null) {        //Определяем что до конца списка осталось 4 постера, что бы начать загрузку данных ЗАВРАНЕЕ
+        if (movies.size() >= 20 && position > movies.size() - 4 && onReachEndListener != null) {        //Определяем что до конца списка осталось 4 постера, что бы начать загрузку данных ЗАВРАНЕЕ
             onReachEndListener.onReachEnd();    // вызываем метод интерфейса
         }
 
@@ -84,6 +85,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public int getItemCount() {
         return movies.size();
     }
+
+    //Метод очистки recyclerView
+    public void clear(){
+        this.movies.clear();
+        notifyDataSetChanged();  //всегда оповещаем адаптер об изменении массива
+    }
+
 
     class MovieViewHolder extends RecyclerView.ViewHolder {              //Холдер - держатель View
         private ImageView imageViewSmallPoster;
