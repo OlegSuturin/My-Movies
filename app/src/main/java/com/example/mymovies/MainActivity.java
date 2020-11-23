@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<JSONObject> {
     private RecyclerView recyclerViewPosters;
@@ -56,11 +58,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static int page = 1;    // переменная, которая хранит номер страницы загружаемых фильмов, увеличивается каждый раз на 1;
     private static boolean isLoading = false;     // используется при подгрузке данных, чтобы метод подгрузки не вызывался несколько раз, пока данные грузятся
     private static int methodOfSort;
+    private static String lang;                 //Язык
+
+    private int columnCount() {             //Метод для расчета кол-ва колонок в зависимости от поворота экрана
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();     // получаем объект, который хранит характеристики экрана
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);  //пераем объект менеджеру окон - конструкция
+        //теперь можно получить ширину экрана в пикселях dp (поэтому разделили реальные пиксели на плотность экрана)
+        int width = (int) (displayMetrics.widthPixels / displayMetrics.density);
+
+        return width / 185 > 2 ? width / 185 :2; // использована тернальная операция - заменяет if/else
+                                                // если width / 185 >2, то возвращаем width / 185, иначе возвращаем 2
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        lang = Locale.getDefault().getLanguage();  //получили язык установленный на устройстве
 
         switchSort = findViewById(R.id.switchSort);
         recyclerViewPosters = findViewById(R.id.recyclerViewPosters);
@@ -72,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         loaderManager = LoaderManager.getInstance(this);       // получение доступа к loaderManager  используется паттерн SINGLETON
 
         movieAdapter = new MovieAdapter();
-        recyclerViewPosters.setLayoutManager(new GridLayoutManager(this, 2));   //установили отображение сеткой 2
+        recyclerViewPosters.setLayoutManager(new GridLayoutManager(this, columnCount()));   //установили отображение сеткой 2
         recyclerViewPosters.setAdapter(movieAdapter);           //передали адаптер в RevyclerView
         switchSort.setChecked(true);  // установили в сортировку по рейтингу - Слушатель не срабатывает т.к. он определен ниже.
 
@@ -104,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onReachEnd() {
                 if (!isLoading) {   //если процесс загрузки не идет
-                    Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();    // код ПОДГРУЗКИ ДАННЫХ
+                    //Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();    // код ПОДГРУЗКИ ДАННЫХ
                     downLoadData(methodOfSort, page);
                 }
             }
@@ -117,12 +134,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onChanged(List<Movie> moviesFromLivedata) {          //метод запускается каждый раз, как изменяется список (синхронизирован с записями БД);
                 //   movieAdapter.setMovies(moviesFromLivedata);             //Метод отвечает за  - обновление данные на RecyclerView  - ОТОБРАЖЕНИЕ
                 // movieAdapter.notifyDataSetChanged();
-                if(page == 1){
+                if (page == 1) {
                     movieAdapter.setMovies(moviesFromLivedata);    // если отсутствует интернет устанавливаем на адаптер фильмы из БД
-                                                                    //ЛОГИКА ПРИЛОЖЕНИЯ
+                    //ЛОГИКА ПРИЛОЖЕНИЯ
                 }                                                   //если только запустили приложение или изменили метод сортировки т.е. page=1 - начинаем подгрузку данных
-                                                                    //если интернета нет - то подгрузка данных не произойдет - данные беруться из БД (moviesFromLivedata)) - можно пользоваться приложением без связи
-                                                                    //если интернет есть - то загрузятся новые денные в загрузчике, все данные БД очистятся (см.onLoadFinished) и сохранятся новые значения
+                //если интернета нет - то подгрузка данных не произойдет - данные беруться из БД (moviesFromLivedata)) - можно пользоваться приложением без связи
+                //если интернет есть - то загрузятся новые денные в загрузчике, все данные БД очистятся (см.onLoadFinished) и сохранятся новые значения
 
             }
         });
@@ -185,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     //вынесли загрузку данных в отдельный метод
     //из Интернета заполняем свой ArrayList movies, из movies заполняем БД (Live data -> Recyclerview = отображение)
     private void downLoadData(int methodOfSort, int page) {
-        URL url = NetworkUtils.buildURL(methodOfSort, page);
+        URL url = NetworkUtils.buildURL(methodOfSort, page, lang);
         //  Log.i("!@#", url.toString());
         Bundle bundle = new Bundle();
         bundle.putString("url", url.toString());

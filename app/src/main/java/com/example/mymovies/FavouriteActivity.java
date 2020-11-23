@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +28,18 @@ public class FavouriteActivity extends AppCompatActivity {
     private MovieAdapter adapter;
     private MainViewModel viewModel;
 
+    private int columnCount() {             //Метод для расчета кол-ва колонок в зависимости от поворота экрана
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();     // получаем объект, который хранит характеристики экрана
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);  //пераем объект менеджеру окон - конструкция
+        //теперь можно получить ширину экрана в пикселях dp (поэтому разделили реальные пиксели на плотность экрана)
+        int width = (int) (displayMetrics.widthPixels / displayMetrics.density);
+
+        return width / 185 > 2 ? width / 185 :2; // использована тернальная операция - заменяет if/else
+        // если width / 185 >2, то возвращаем width / 185, иначе возвращаем 2
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +47,7 @@ public class FavouriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_favourite);
 
         recyclerviewFavouriteMovies = findViewById(R.id.recyclerViewFavouriteMovies);
-        recyclerviewFavouriteMovies.setLayoutManager(new GridLayoutManager(this, 2));   //установили разметку Recyclerview
+        recyclerviewFavouriteMovies.setLayoutManager(new GridLayoutManager(this, columnCount()));   //установили разметку Recyclerview
         adapter = new MovieAdapter();
         recyclerviewFavouriteMovies.setAdapter(adapter);
 
@@ -62,7 +75,6 @@ public class FavouriteActivity extends AppCompatActivity {
         public void onPosterClick(int position) {
             // Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
             Movie movie = adapter.getMovies().get(position);
-
             Intent intent = new Intent(FavouriteActivity.this, DetailActivity.class);
             intent.putExtra("id", movie.getId());
 
@@ -70,6 +82,7 @@ public class FavouriteActivity extends AppCompatActivity {
             startActivity(intent);
         }
     });
+            adapter.notifyDataSetChanged();
     } // end of onCreate();
 
 

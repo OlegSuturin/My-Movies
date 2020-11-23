@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -43,17 +45,20 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView imageViewStar;
     private RecyclerView recyclerViewTrailers;
     private RecyclerView recyclerViewReviews;
+    private ScrollView scrollViewInfo;
 
     private MainViewModel viewModel;
     private int id;
     private Movie movie;
     private FavouriteMovie favouriteMovie;
+    private static String lang;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        lang = Locale.getDefault().getLanguage();  //получили язык установленный на устройстве
 
         imageViewBigPoster = findViewById(R.id.imageViewBigPoster);
         textViewTitle = findViewById(R.id.textViewTitle);
@@ -64,6 +69,7 @@ public class DetailActivity extends AppCompatActivity {
         imageViewStar = findViewById(R.id.imageViewAddToFavourite);
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
         recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        scrollViewInfo = findViewById(R.id.scrollViewInfo);
 
         Intent intent = getIntent();                                    //! проверяем Интент и наличие параметров
         if (intent != null && intent.hasExtra("id")) {
@@ -89,7 +95,7 @@ public class DetailActivity extends AppCompatActivity {
         // Log.i("!@#", urlReviews);
 
 
-        JSONObject jsonObjectTrailer = NetworkUtils.getJSONFForVideos(id);
+        JSONObject jsonObjectTrailer = NetworkUtils.getJSONFForVideos(movie.getId(), lang);
         ArrayList<Trailer> trailers = JSONUtils.getTrailersFromJSON(jsonObjectTrailer);
         TrailerAdapter trailerAdapter = new TrailerAdapter(trailers);
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
@@ -105,11 +111,13 @@ public class DetailActivity extends AppCompatActivity {
         });
 
 
-        JSONObject jsonObjectReview = NetworkUtils.getJSONForReviews(id);
+        JSONObject jsonObjectReview = NetworkUtils.getJSONForReviews(movie.getId(), lang);
         ArrayList<Review> reviews = JSONUtils.getReviewsFromJSON(jsonObjectReview);
         ReviewAdapter reviewAdapter = new ReviewAdapter(reviews);
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReviews.setAdapter(reviewAdapter);
+
+        scrollViewInfo.smoothScrollTo(0,0);   //устанавливаем скролл на начало экрана
 
     } //end of onCreate()
 

@@ -45,7 +45,7 @@ public class NetworkUtils {
 
 
     private static final String API_KEY = "3bcb031a3c3fcdb49409692e8fb88be9";     //их значения
-    private static final String LANGUAGE_VALUE = "ru-RU";
+    //    private static final String LANGUAGE_VALUE = "ru-RU";
     private static final String SORT_BY_POPULARITY = "popularity.desc";  // сорт.по популярности убыв.
     private static final String SORT_BY_TOP_RATED = "vote_average.desc"; //по средней оценке убыв.
     private static final String MIN_VOTE_COUNT = "1000";                    //минимальное количество голосов
@@ -56,13 +56,13 @@ public class NetworkUtils {
 
 
     //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на ОТЗЫВЫ фильма
-    public static URL buildURLReviews(int id) {
+    public static URL buildURLReviews(int id, String lang) {
         URL resultURL = null;
         String baseURLVideos = String.format(BASE_URL_REVIEWS, id);
 
         Uri uri = Uri.parse(baseURLVideos).buildUpon()
                 .appendQueryParameter(PARAMS_API_KEY, API_KEY)
-            //    .appendQueryParameter(PERAMS_LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(PERAMS_LANGUAGE, lang)
                 .build();
 
         try {
@@ -74,13 +74,13 @@ public class NetworkUtils {
     }
 
     //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на трейлеры фильма
-    public static URL buildURLVideos(int id) {
+    public static URL buildURLVideos(int id, String lang) {
         URL resultURL = null;
         String baseURLVideos = String.format(BASE_URL_VIDEOS, id);
 
         Uri uri = Uri.parse(baseURLVideos).buildUpon()
                 .appendQueryParameter(PARAMS_API_KEY, API_KEY)
-                .appendQueryParameter(PERAMS_LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(PERAMS_LANGUAGE, lang)
                 .build();
 
         try {
@@ -93,7 +93,7 @@ public class NetworkUtils {
 
 
     //МЕТОД, ФОРМИРУЕС СТРОКУ ЗАПРОСА URL на фильмы
-    public static URL buildURL(int sortBy, int page) {
+    public static URL buildURL(int sortBy, int page, String lang) {
         URL resultURL = null;   // присв null, т.к. преобразование может выбросить исключение
         String methodSortBy;
 
@@ -105,7 +105,7 @@ public class NetworkUtils {
         //формируем строку запроса ? = & вст. автоматически
         Uri uri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(PARAMS_API_KEY, API_KEY)  //добпвляем параметры
-                .appendQueryParameter(PERAMS_LANGUAGE, LANGUAGE_VALUE)
+                .appendQueryParameter(PERAMS_LANGUAGE, lang)
                 .appendQueryParameter(PARAMS_SORT_BY, methodSortBy)     //установили метод сортировки
                 .appendQueryParameter(PARAMS_MIN_VOTE_COUNT, MIN_VOTE_COUNT)
                 .appendQueryParameter(PARAMS_PAGE, Integer.toString(page))
@@ -122,9 +122,9 @@ public class NetworkUtils {
 
 
     //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА - исполняется в др.программном потоке
-    public static JSONObject getJSONFromNetwork(int sortBy, int page) {
+    public static JSONObject getJSONFromNetwork(int sortBy, int page, String lang) {
         JSONObject jsonObject = null;
-        URL url = buildURL(sortBy, page); //формируем url
+        URL url = buildURL(sortBy, page, lang); //формируем url
         //Log.i("!@#", url.toString());
         try {
             JSONLoadTask task = new JSONLoadTask();
@@ -139,9 +139,9 @@ public class NetworkUtils {
     }
 
     //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА для Трейлеров - исполняется в др.программном потоке
-    public static JSONObject getJSONFForVideos(int id) {
+    public static JSONObject getJSONFForVideos(int id, String lang) {
         JSONObject jsonObject = null;
-        URL url = buildURLVideos(id); //формируем url
+        URL url = buildURLVideos(id, lang); //формируем url
         //Log.i("!@#", url.toString());
         try {
             JSONLoadTask task = new JSONLoadTask();
@@ -156,9 +156,9 @@ public class NetworkUtils {
     }
 
     //МЕТОД - ЗАГРУЗКА ДАННЫХ ИЗ ИНТЕРНЕТА для ОТЗЫВОВ - исполняется в др.программном потоке
-    public static JSONObject getJSONForReviews(int id) {
+    public static JSONObject getJSONForReviews(int id, String lang) {
         JSONObject jsonObject = null;
-        URL url = buildURLReviews(id); //формируем url
+        URL url = buildURLReviews(id, lang); //формируем url
         //Log.i("!@#", url.toString());
         try {
             JSONLoadTask task = new JSONLoadTask();
@@ -208,81 +208,83 @@ public class NetworkUtils {
             }
         }
     }
-//----------------------------------------------загрузка данных на основе AsyncTaskLoader
-    public static class JSONLoader extends AsyncTaskLoader<JSONObject>{             // в <> возвращаемое значение
-    private Bundle bundle;    //url передается в объекте Bundle, который формируется при сохоанении состоянии активности
-    private OnStartLoadingListener onStartLoadingListener;   //объект интерфейсного типа - Слушатель
 
-    public interface OnStartLoadingListener{           // СЛУШАТЕЛЬ на начало загрузки дпнных
-        void onStartLoading();
-    }
-                                                        //+сеттер на него
-    public void setOnStartLoadingListener(OnStartLoadingListener onStartLoadingListener) {
-        this.onStartLoadingListener = onStartLoadingListener;
-    }
+    //----------------------------------------------загрузка данных на основе AsyncTaskLoader
+    public static class JSONLoader extends AsyncTaskLoader<JSONObject> {             // в <> возвращаемое значение
+        private Bundle bundle;    //url передается в объекте Bundle, который формируется при сохоанении состоянии активности
+        private OnStartLoadingListener onStartLoadingListener;   //объект интерфейсного типа - Слушатель
 
-    public JSONLoader(@NonNull Context context, Bundle bundle) {                   //обязательный конструктор
-        super(context);
-        this.bundle =bundle;                //передали bundle в конструкторе
-    }
-
-    @Override                                       //переопределяем
-    protected void onStartLoading() {
-        super.onStartLoading();
-        if(onStartLoadingListener !=null ){                 //РАЗМЕЩЕНИЕ слушателя
-            onStartLoadingListener.onStartLoading();
-        }
-        forceLoad();       // продолжить ЗАГРУЗКУ
-    }
-
-    @Nullable
-    @Override
-    public JSONObject loadInBackground() {
-        if (bundle == null){
-            return null;
-        }
-        String urlAsString = bundle.getString("url");  //получаем из bundle сохраненный url по ключу
-        URL url = null;
-
-        try {
-            url = new URL(urlAsString);
-           // Log.i("!@#", url.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        public interface OnStartLoadingListener {           // СЛУШАТЕЛЬ на начало загрузки дпнных
+            void onStartLoading();
         }
 
-        JSONObject jsonObject = null;
+        //+сеттер на него
+        public void setOnStartLoadingListener(OnStartLoadingListener onStartLoadingListener) {
+            this.onStartLoadingListener = onStartLoadingListener;
+        }
 
-        if (url == null) {            //обязательно проверять URL
-            return jsonObject; // будет = null
-        } else {
-            HttpURLConnection urlConnection = null;
-            try {
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-                StringBuilder stringBuilder = new StringBuilder();
-                String line = bufferedReader.readLine();
-                while (line != null) {
-                    stringBuilder.append(line);
-                    line = bufferedReader.readLine();
-                }
+        public JSONLoader(@NonNull Context context, Bundle bundle) {                   //обязательный конструктор
+            super(context);
+            this.bundle = bundle;                //передали bundle в конструкторе
+        }
 
-                jsonObject = new JSONObject(stringBuilder.toString());
-
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-
+        @Override                                       //переопределяем
+        protected void onStartLoading() {
+            super.onStartLoading();
+            if (onStartLoadingListener != null) {                 //РАЗМЕЩЕНИЕ слушателя
+                onStartLoadingListener.onStartLoading();
             }
-            return jsonObject;
+            forceLoad();       // продолжить ЗАГРУЗКУ
+        }
+
+        @Nullable
+        @Override
+        public JSONObject loadInBackground() {
+            if (bundle == null) {
+                return null;
+            }
+            String urlAsString = bundle.getString("url");  //получаем из bundle сохраненный url по ключу
+            URL url = null;
+
+            try {
+                url = new URL(urlAsString);
+                // Log.i("!@#", url.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            JSONObject jsonObject = null;
+
+            if (url == null) {            //обязательно проверять URL
+                return jsonObject; // будет = null
+            } else {
+                HttpURLConnection urlConnection = null;
+                try {
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    InputStream in = urlConnection.getInputStream();
+                    InputStreamReader reader = new InputStreamReader(in);
+                    BufferedReader bufferedReader = new BufferedReader(reader);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line = bufferedReader.readLine();
+                    while (line != null) {
+                        stringBuilder.append(line);
+                        line = bufferedReader.readLine();
+                    }
+
+                    jsonObject = new JSONObject(stringBuilder.toString());
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+
+                }
+                return jsonObject;
+            }
         }
     }
-}
 ////////////-----------------------------------------------
 }
 
