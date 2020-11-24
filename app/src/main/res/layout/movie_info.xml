@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin ="8dp"
         android:text="@string/label_title_movie"
-        android:textColor="@color/white"
+        style="@style/LabelStyle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/label_original_title"
-        android:textColor="@color/white"
+        style="@style/LabelStyle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
     <View
@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/label_rating"
-        android:textColor="@color/white"
+        style="@style/LabelStyle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewOriginalTitle" />
 
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/label_release_date"
-        android:textColor="@color/white"
+        style="@style/LabelStyle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewRating" />
     <View
@@ -139,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/label_overview"
-        android:textColor="@color/white"
+        style="@style/LabelStyle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate" />
 

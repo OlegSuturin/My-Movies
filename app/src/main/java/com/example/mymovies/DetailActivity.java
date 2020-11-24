@@ -91,7 +91,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
 
-        Picasso.get().load(movie.getBigPosterPath()).into(imageViewBigPoster);
+        Picasso.get().load(movie.getBigPosterPath()).placeholder(R.drawable.placeholder).into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
         textViewOriginalTitle.setText(movie.getOriginalTitle());
         textViewRating.setText(Double.toString(movie.getVoteAverage()));

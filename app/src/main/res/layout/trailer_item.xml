@@ -12,8 +12,9 @@
 
         <ImageView
             android:id="@+id/imageViewPlay"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:background="@android:color/holo_red_light"
+            android:layout_width="@dimen/size_play_icon"
+            android:layout_height="@dimen/size_play_icon"
             android:layout_margin="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
