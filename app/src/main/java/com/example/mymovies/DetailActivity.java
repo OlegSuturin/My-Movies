@@ -60,8 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         lang = Locale.getDefault().getLanguage();  //получили язык установленный на устройстве
-
-        Log.i("!@#", lang);
+        
 
         imageViewBigPoster = findViewById(R.id.imageViewBigPoster);
         textViewTitle = findViewById(R.id.textViewTitle);
