@@ -18,8 +18,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/play_of_trailer"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            android:contentDescription="@string/play_of_trailer_icon"
+            app:srcCompat="@android:drawable/ic_media_play"
+            />
         <TextView
             android:id="@+id/textViewNameOfVideo"
             android:layout_width="0dp"

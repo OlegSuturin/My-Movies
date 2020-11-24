@@ -50,8 +50,8 @@
         app:layout_constraintTop_toBottomOf="@+id/switchSort" />
     <ProgressBar
         android:id="@+id/progressBarLoading"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/switchSort"

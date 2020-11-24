@@ -1,11 +1,19 @@
 <resources>
-    <string name="app_name">My Movies</string>
+    <string name="app_name">Фильмоскоп</string>
     <string name="poster_of_movie">Постер к фильму</string>
     <string name="best_popilarity">Самые популярные</string>
     <string name="top_rated">Наиболее рейтинговые</string>
-    <string name="add_to_favourites">Добавлено в избранное</string>
-    <string name="delete_from_favourites">Удалено из избранного</string>
+    <string name="add_to_favourites">добавлено в избранное</string>
+    <string name="delete_from_favourites">удалено из избранного</string>
     <string name="item_main">Главная</string>
     <string name="item_favourite">Избранное</string>
-    <string name="play_of_trailer">Запустить трейлер</string>
+    <string name="play_of_trailer_icon">Запустить трейлер</string>
+    <string name="label_app">Фильмоскоп</string>
+    <string name="big_poster_image">Большой постер</string>
+    <string name="add_to_favourite_image">Знак - добавить в избранное</string>
+    <string name="label_title_movie">Название:</string>
+    <string name="label_original_title">Оригинальное название:</string>
+    <string name="label_rating">Оценка:</string>
+    <string name="label_release_date">Дата выхода:</string>
+    <string name="label_overview">Описание:</string>
 </resources>

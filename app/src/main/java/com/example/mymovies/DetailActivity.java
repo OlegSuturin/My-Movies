@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,13 +53,15 @@ public class DetailActivity extends AppCompatActivity {
     private Movie movie;
     private FavouriteMovie favouriteMovie;
     private static String lang;
-
+    private boolean favouriteTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         lang = Locale.getDefault().getLanguage();  //получили язык установленный на устройстве
+
+        Log.i("!@#", lang);
 
         imageViewBigPoster = findViewById(R.id.imageViewBigPoster);
         textViewTitle = findViewById(R.id.textViewTitle);
@@ -74,12 +77,20 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();                                    //! проверяем Интент и наличие параметров
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
+            favouriteTag = intent.getBooleanExtra("favouriteTag", favouriteTag);
+
         } else {
             finish();               //  закрываем активность, если что то не так
         }
 
         viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
-        movie = viewModel.getMovieById(id);
+
+        if (favouriteTag) {
+            movie = viewModel.getFavouriteMovieById(id);
+        } else {
+            movie = viewModel.getMovieById(id);
+        }
+
 
         Picasso.get().load(movie.getBigPosterPath()).into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
@@ -104,8 +115,8 @@ public class DetailActivity extends AppCompatActivity {
         trailerAdapter.setOnTrailerClickListener(new TrailerAdapter.OnTrailerClickListener() {
             @Override
             public void trailerOnClick(String url) {
-               //Toast.makeText(DetailActivity.this, url, Toast.LENGTH_SHORT).show();
-                Intent  intentYoutube = new Intent(Intent.ACTION_VIEW, Uri.parse(url));                 //Вызываем неявный интент со ссылкой на youtube
+                //Toast.makeText(DetailActivity.this, url, Toast.LENGTH_SHORT).show();
+                Intent intentYoutube = new Intent(Intent.ACTION_VIEW, Uri.parse(url));                 //Вызываем неявный интент со ссылкой на youtube
                 startActivity(intentYoutube);
             }
         });
@@ -117,7 +128,7 @@ public class DetailActivity extends AppCompatActivity {
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReviews.setAdapter(reviewAdapter);
 
-        scrollViewInfo.smoothScrollTo(0,0);   //устанавливаем скролл на начало экрана
+        scrollViewInfo.smoothScrollTo(0, 0);   //устанавливаем скролл на начало экрана
 
     } //end of onCreate()
 

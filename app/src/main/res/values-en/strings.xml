@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Filmoscope</string>
+    <string name="poster_of_movie">Poster for the movie</string>
+    <string name="best_popilarity">Most popular</string>
+    <string name="top_rated">Most rated</string>
+    <string name="add_to_favourites">added to favorites</string>
+    <string name="delete_from_favourites">removed from favorites</string>
+    <string name="item_main">Main</string>
+    <string name="item_favourite">Favourites</string>
+    <string name="play_of_trailer_icon">Launch the trailer</string>
+    <string name="label_app">Filmoscope</string>
+    <string name="big_poster_image">Big poster</string>
+    <string name="add_to_favourite_image">Sign - add to favorites</string>
+    <string name="label_title_movie">Title:</string>
+    <string name="label_original_title">Original title:</string>
+    <string name="label_rating">Rating:</string>
+    <string name="label_release_date">Release date:</string>
+    <string name="label_overview">Overview:</string>
+</resources>

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="size_of_star">60dp</dimen>
+    <dimen name="size_of_star_land">50dp</dimen>
+    <dimen name="margin_star_land">10dp</dimen>
+    <dimen name="margin_star">16dp</dimen>
+    <dimen name="progress_bar_size">42dp</dimen>
 </resources>
