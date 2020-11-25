@@ -1,4 +1,4 @@
-package com.example.mymovies.data;
+package com.oliverst.mymovies.data;
 
 //Класс - Отзыв
 

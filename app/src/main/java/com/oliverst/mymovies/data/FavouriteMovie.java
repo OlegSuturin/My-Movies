@@ -1,4 +1,4 @@
-package com.example.mymovies.data;
+package com.oliverst.mymovies.data;
 
 //Класс наследует Movie
 //Так же POJO объект, т.к. это вторая таблица в БД - для хранения избранных фильмов

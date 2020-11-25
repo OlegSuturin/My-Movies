@@ -1,4 +1,4 @@
-package com.example.mymovies.data;
+package com.oliverst.mymovies.data;
 
 import android.app.Application;
 import android.os.AsyncTask;

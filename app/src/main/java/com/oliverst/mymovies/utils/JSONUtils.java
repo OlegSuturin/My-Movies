@@ -1,8 +1,8 @@
-package com.example.mymovies.utils;
+package com.oliverst.mymovies.utils;
 
-import com.example.mymovies.data.Movie;
-import com.example.mymovies.data.Review;
-import com.example.mymovies.data.Trailer;
+import com.oliverst.mymovies.data.Movie;
+import com.oliverst.mymovies.data.Review;
+import com.oliverst.mymovies.data.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;

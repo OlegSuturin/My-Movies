@@ -1,4 +1,4 @@
-package com.example.mymovies;
+package com.oliverst.mymovies;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,13 +22,12 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.mymovies.adapters.MovieAdapter;
-import com.example.mymovies.data.MainViewModel;
-import com.example.mymovies.data.Movie;
-import com.example.mymovies.utils.JSONUtils;
-import com.example.mymovies.utils.NetworkUtils;
+import com.oliverst.mymovies.adapters.MovieAdapter;
+import com.oliverst.mymovies.data.MainViewModel;
+import com.oliverst.mymovies.data.Movie;
+import com.oliverst.mymovies.utils.JSONUtils;
+import com.oliverst.mymovies.utils.NetworkUtils;
 
 import org.json.JSONObject;
 

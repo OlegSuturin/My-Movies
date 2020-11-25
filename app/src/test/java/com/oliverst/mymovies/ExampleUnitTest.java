@@ -1,4 +1,4 @@
-package com.example.mymovies;
+package com.oliverst.mymovies;
 
 import org.junit.Test;
 

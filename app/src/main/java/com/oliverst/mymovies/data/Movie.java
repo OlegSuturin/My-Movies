@@ -1,4 +1,4 @@
-package com.example.mymovies.data;
+package com.oliverst.mymovies.data;
 //класс Фильм, сформированный из JSON
 //он же объект POJO, для хранения в БД
 

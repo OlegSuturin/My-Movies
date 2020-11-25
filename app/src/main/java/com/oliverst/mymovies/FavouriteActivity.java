@@ -1,4 +1,4 @@
-package com.example.mymovies;
+package com.oliverst.mymovies;
 //Активность показывает список всех Избранных фильмов
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +15,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.mymovies.adapters.MovieAdapter;
-import com.example.mymovies.data.FavouriteMovie;
-import com.example.mymovies.data.MainViewModel;
-import com.example.mymovies.data.Movie;
+import com.oliverst.mymovies.adapters.MovieAdapter;
+import com.oliverst.mymovies.data.FavouriteMovie;
+import com.oliverst.mymovies.data.MainViewModel;
+import com.oliverst.mymovies.data.Movie;
 
 import java.util.ArrayList;
 import java.util.List;

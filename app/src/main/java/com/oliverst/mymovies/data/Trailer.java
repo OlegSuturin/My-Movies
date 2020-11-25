@@ -1,4 +1,4 @@
-package com.example.mymovies.data;
+package com.oliverst.mymovies.data;
 // Класс - Трейлеры
 public class Trailer {
     private String key;

@@ -1,4 +1,4 @@
-package com.example.mymovies;
+package com.oliverst.mymovies;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,15 +18,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mymovies.adapters.ReviewAdapter;
-import com.example.mymovies.adapters.TrailerAdapter;
-import com.example.mymovies.data.FavouriteMovie;
-import com.example.mymovies.data.MainViewModel;
-import com.example.mymovies.data.Movie;
-import com.example.mymovies.data.Review;
-import com.example.mymovies.data.Trailer;
-import com.example.mymovies.utils.JSONUtils;
-import com.example.mymovies.utils.NetworkUtils;
+import com.oliverst.mymovies.adapters.ReviewAdapter;
+import com.oliverst.mymovies.adapters.TrailerAdapter;
+import com.oliverst.mymovies.data.FavouriteMovie;
+import com.oliverst.mymovies.data.MainViewModel;
+import com.oliverst.mymovies.data.Movie;
+import com.oliverst.mymovies.data.Review;
+import com.oliverst.mymovies.data.Trailer;
+import com.oliverst.mymovies.utils.JSONUtils;
+import com.oliverst.mymovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;

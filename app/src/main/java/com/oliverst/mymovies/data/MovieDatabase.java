@@ -1,4 +1,4 @@
-package com.example.mymovies.data;
+package com.oliverst.mymovies.data;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Movie.class, FavouriteMovie.class}, version = 9, exportSchema = false)
+@Database(entities = {Movie.class, FavouriteMovie.class}, version = 10, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
     private static MovieDatabase database;
     private static final String DB_NAME = "movies.db";
