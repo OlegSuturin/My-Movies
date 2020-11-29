@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.oliverst.mymovies.adapters.MovieAdapter;
 import com.oliverst.mymovies.data.MainViewModel;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private MainViewModel viewModel;
 
-    private static final int LOADER_ID = 133; // - уникальный идентификатор загрузчика, определяем сами
+    private static final int LOADER_ID = 1133; // - уникальный идентификатор загрузчика, определяем сами
     private LoaderManager loaderManager;      //  - менеджер загрузок
 
     private static int page = 1;    // переменная, которая хранит номер страницы загружаемых фильмов, увеличивается каждый раз на 1;
@@ -234,6 +235,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     //в этом методе получаем данные по окончании работы загрузчика
     public void onLoadFinished(@NonNull Loader<JSONObject> loader, JSONObject jsonObject) {
+        if (jsonObject == null) {
+            Toast.makeText(this, "данные не загружены", Toast.LENGTH_SHORT).show();
+        }
         ArrayList<Movie> movies = JSONUtils.getMoviesFromJSON(jsonObject);
         if (movies != null && !movies.isEmpty()) {        //проверили, что данные получили
             if (page == 1) {
@@ -245,6 +249,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             movieAdapter.addMovies(movies);                     //добавление фильмов в адаптер перенесли из обсервера сюда, чтобы сделать это сразу один раз на 20 фильмов
             page++;    //загрузили страницу из 20-ти фильмов, увеличили на 1;
+        }else{
+            Toast.makeText(this, "Данные не загружены!", Toast.LENGTH_SHORT).show();
         }
 
         isLoading = false;                //загрузка закончилась

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -191,9 +193,7 @@ public class NetworkUtils {
                         stringBuilder.append(line);
                         line = bufferedReader.readLine();
                     }
-
                     jsonObject = new JSONObject(stringBuilder.toString());
-
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 } finally {
@@ -255,6 +255,7 @@ public class NetworkUtils {
 
             if (url == null) {            //обязательно проверять URL
                 return jsonObject; // будет = null
+
             } else {
                 HttpURLConnection urlConnection = null;
                 try {

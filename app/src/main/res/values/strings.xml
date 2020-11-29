@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Фильмоскоп</string>
+    <string name="app_name">Фильмоскоп. Что посмотреть?</string>
     <string name="poster_of_movie">Постер к фильму</string>
-    <string name="best_popilarity">Самые популярные</string>
-    <string name="top_rated">Наиболее рейтинговые</string>
+    <string name="best_popilarity">По популярности</string>
+    <string name="top_rated">По рейтингу</string>
     <string name="add_to_favourites">добавлено в избранное</string>
     <string name="delete_from_favourites">удалено из избранного</string>
     <string name="item_main">Главная</string>
@@ -16,4 +16,6 @@
     <string name="label_rating">Оценка:</string>
     <string name="label_release_date">Дата выхода:</string>
     <string name="label_overview">Описание:</string>
+    <string name="title_actionbar_favourite">Избранное:</string>
+    <string name="title_actionbar_detail">О фильме:</string>
 </resources>

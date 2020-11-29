@@ -17,4 +17,6 @@
     <string name="label_rating">Rating:</string>
     <string name="label_release_date">Release date:</string>
     <string name="label_overview">Overview:</string>
+    <string name="title_actionbar_favourite">Favourites:</string>
+    <string name="title_actionbar_detail">About the film:</string>
 </resources>

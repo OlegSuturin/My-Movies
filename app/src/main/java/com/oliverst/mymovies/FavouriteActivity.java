@@ -1,6 +1,7 @@
 package com.oliverst.mymovies;
 //Активность показывает список всех Избранных фильмов
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -45,6 +46,10 @@ public class FavouriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle(R.string.title_actionbar_favourite);
+        }
 
         recyclerviewFavouriteMovies = findViewById(R.id.recyclerViewFavouriteMovies);
         recyclerviewFavouriteMovies.setLayoutManager(new GridLayoutManager(this, columnCount()));   //установили разметку Recyclerview
